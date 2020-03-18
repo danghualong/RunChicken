@@ -9,7 +9,7 @@
     <Grid>
         <Ellipse x:Name="pg" Stroke="Black" StrokeThickness="2" Fill="#eee" Margin="3"/>
         <Image x:Name="img" Source=".\imgs\chicken_bg.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                           Stretch="UniformToFill" Opacity="0.7"/>
+                           Stretch="UniformToFill"/>
         <TextBlock x:Name="tb1" Text="A" FontSize="30" Foreground="Red"
                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>

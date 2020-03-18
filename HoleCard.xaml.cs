@@ -21,6 +21,7 @@ namespace RunChicken
     /// </summary>
     public partial class HoleCard : UserControl
     {
+        public event Action<string> CardUnfolded;
         private static bool IsLocked = false;
         public HoleCard()
         {
@@ -119,6 +120,15 @@ namespace RunChicken
         {
             FrontSide = 0;
             IsLocked = false;
+            OnCardUnfolded(this.Character);
+        }
+
+        private void OnCardUnfolded(string text)
+        {
+            if (CardUnfolded != null)
+            {
+                CardUnfolded(text);
+            }
         }
     }
 }

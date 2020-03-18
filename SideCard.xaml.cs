@@ -31,37 +31,53 @@ namespace RunChicken
         {
             
         }
+
+        public int Index
+        {
+            get;set;
+        }
         
-        public int PlayerCovered
+        public string Avatar
         {
             get
             {
-                return (int)GetValue(PlayerCoveredProperty);
+                return (string)GetValue(AvatarProperty);
             }
             set
             {
-                SetValue(PlayerCoveredProperty, value);
+                SetValue(AvatarProperty, value);
             }
         }
 
-        public static readonly DependencyProperty PlayerCoveredProperty = DependencyProperty.Register("PlayerCovered", typeof(int), typeof(SideCard), new PropertyMetadata(-1, new PropertyChangedCallback(PlayerCoveredChanged)));
+        public static readonly DependencyProperty AvatarProperty = DependencyProperty.Register("Avatar", typeof(string), typeof(SideCard), new PropertyMetadata(null, new PropertyChangedCallback(AvatarChanged)));
 
-        private static void PlayerCoveredChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void AvatarChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var obj = d as SideCard;
-            int typeId = (int)e.NewValue;
-            if(typeId==0)
+            string imgPath = (string)e.NewValue;
+            if(string.IsNullOrEmpty(imgPath))
             {
-                obj.img.Opacity =0;
+                //obj.img.Opacity =0;
+                //obj.img.Source = null;
+                obj.img.Visibility = Visibility.Collapsed;
                 obj.tb1.Visibility = Visibility.Visible;
             }
             else
             {
-                obj.img.Opacity = 0.7;
+                //obj.img.Opacity = 1;
+                obj.img.Source = new BitmapImage(new Uri(imgPath));
+                obj.img.Visibility = Visibility.Visible;
                 obj.tb1.Visibility = Visibility.Collapsed;
             }
         }
 
+        public bool PlayerCovered
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(Avatar);
+            }
+        }
         public string Character
         {
             get

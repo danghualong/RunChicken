@@ -58,6 +58,7 @@
     <Compile Include="Board.xaml.cs">
       <DependentUpon>Board.xaml</DependentUpon>
     </Compile>
+    <Compile Include="models\Player.cs" />
     <Compile Include="SideCard.xaml.cs">
       <DependentUpon>SideCard.xaml</DependentUpon>
     </Compile>
@@ -119,6 +120,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="imgs\chicken_bg.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\dbc.jpg" />
+    <Resource Include="imgs\dyx.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
