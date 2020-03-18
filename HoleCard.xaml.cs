@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace RunChicken
     /// </summary>
     public partial class HoleCard : UserControl
     {
+        private static bool IsLocked = false;
         public HoleCard()
         {
             InitializeComponent();
@@ -28,21 +30,24 @@ namespace RunChicken
 
         private void HoleCard_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var width = this.Width;
-            var height = this.Height;
+            var padding = 3f;
+            var width = this.ActualWidth-2*padding;
+            var height = this.ActualHeight-2 * padding;
+            var unit = width / 2;
             var sqrt3 = Math.Sqrt(3);
             if (sqrt3 * width> 2 * height)
             {
-                width = 2 * height / sqrt3;
+                unit =height / sqrt3;
             }
-            var unit = width / 2;
+            var xPadding = width/2-unit;
+            var yPadding = height / 2 - sqrt3 * unit/2;
             var points = new PointCollection();
-            points.Add(new Point(0, sqrt3 / 2 * unit));
-            points.Add(new Point(unit/2, 0));
-            points.Add(new Point(unit*3 / 2,0));
-            points.Add(new Point(2*unit, sqrt3 / 2 * unit));
-            points.Add(new Point(unit * 3 / 2, sqrt3 * unit));
-            points.Add(new Point(unit/ 2, sqrt3 * unit));
+            points.Add(new Point(xPadding+0, yPadding+sqrt3 / 2 * unit));
+            points.Add(new Point(xPadding+unit/2, yPadding + 0));
+            points.Add(new Point(xPadding+unit*3 / 2, yPadding + 0));
+            points.Add(new Point(xPadding+2*unit, yPadding + sqrt3 / 2 * unit));
+            points.Add(new Point(xPadding+unit * 3 / 2, yPadding + sqrt3 * unit));
+            points.Add(new Point(xPadding+unit/ 2, yPadding + sqrt3 * unit));
             pg.Points = points;
         }
         
@@ -58,7 +63,7 @@ namespace RunChicken
             }
         }
 
-        public static readonly DependencyProperty FrontSideProperty = DependencyProperty.Register("FrontSide", typeof(int), typeof(HoleCard), new PropertyMetadata(0, new PropertyChangedCallback(FrontSideChanged)));
+        public static readonly DependencyProperty FrontSideProperty = DependencyProperty.Register("FrontSide", typeof(int), typeof(HoleCard), new PropertyMetadata(-1, new PropertyChangedCallback(FrontSideChanged)));
 
         private static void FrontSideChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -95,6 +100,25 @@ namespace RunChicken
             var obj = d as HoleCard;
             string character = (string)e.NewValue;
             obj.tb1.Text = character;
+        }
+
+        private void img_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (IsLocked)
+            {
+                return;
+            }
+            FrontSide = 1;
+            var worker = new ThreadService.CountDownWorker(2);
+            worker.WorkCompleted += Worker_WorkCompleted;
+            worker.Start();
+            IsLocked = true;
+        }
+
+        private void Worker_WorkCompleted()
+        {
+            FrontSide = 0;
+            IsLocked = false;
         }
     }
 }
