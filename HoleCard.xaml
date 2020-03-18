@@ -10,7 +10,7 @@
         <Label Width="210" Height="182" Padding="3">
             <Label.Content>
                 <Grid>
-                    <Polygon Points="0,86.6,50,0,150,0,200,86.6,150,173,50,173" Stroke="Black" StrokeThickness="2" Fill="#eee"/>
+                    <Polygon x:Name="pg" Points="0,86.6,50,0,150,0,200,86.6,150,173,50,173" Stroke="Black" StrokeThickness="2" Fill="#eee"/>
                     <Image x:Name="img" Source=".\imgs\chicken_bg.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill" Opacity="0.5" Visibility="Collapsed"/>
                     <TextBlock x:Name="tb1" Text="敹" FontSize="80" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>

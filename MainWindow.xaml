@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RunChicken"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="1000" Width="1200">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120"/>
@@ -15,28 +15,45 @@
             
         </Grid>
         <Grid Grid.Column="1">
-            <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Label Content="0度" Background="Gray" BorderThickness="1" Width="100" Height="30" HorizontalContentAlignment="Center" RenderTransformOrigin="0.5,0.5">
+            <Grid>
+                <Label Content="0度" Background="Gray" BorderThickness="1" Width="100" Height="30" 
+                       HorizontalContentAlignment="Center" RenderTransformOrigin="0.5,0.5">
                     <Label.RenderTransform>
-                        <RotateTransform Angle="0" CenterX="0" CenterY="100"/>
+                        <TransformGroup>
+                            <RotateTransform Angle="0" CenterX="0" CenterY="480"/>
+                            <TranslateTransform Y="-400"/>
+                        </TransformGroup>
                     </Label.RenderTransform>
                 </Label>
                 <Label Content="90度" Background="Gray" BorderThickness="1" Width="100" Height="30" HorizontalContentAlignment="Center" RenderTransformOrigin="0.5,0.5">
                     <Label.RenderTransform>
-                        <RotateTransform Angle="90" CenterX="0" CenterY="100"/>
+                        <TransformGroup>
+                            <RotateTransform Angle="90" CenterX="0" CenterY="480"/>
+                            <TranslateTransform Y="-400"/>
+                        </TransformGroup>
                     </Label.RenderTransform>
                 </Label>
                 <Label Content="180度" Background="Gray" BorderThickness="1" Width="100" Height="30" HorizontalContentAlignment="Center" RenderTransformOrigin="0.5,0.5">
                     <Label.RenderTransform>
-                        <RotateTransform Angle="180" CenterX="0" CenterY="100"/>
+                        <TransformGroup>
+                            <RotateTransform Angle="180" CenterX="0" CenterY="480"/>
+                            <TranslateTransform Y="-400"/>
+                        </TransformGroup>
                     </Label.RenderTransform>
                 </Label>
                 <Label Content="270度" Background="Gray" BorderThickness="1" Width="100" Height="30" HorizontalContentAlignment="Center" RenderTransformOrigin="0.5,0.5">
                     <Label.RenderTransform>
-                        <RotateTransform Angle="270" CenterX="0" CenterY="100"/>
+                        <TransformGroup>
+                            <RotateTransform Angle="270" CenterX="0" CenterY="480"/>
+                            <TranslateTransform Y="-400"/>
+                        </TransformGroup>
                     </Label.RenderTransform>
                 </Label>
-                
+                <UniformGrid Rows="3" Columns="4" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <local:HoleCard FrontSide="0" Character="万" Margin="10"/>
+                    <local:HoleCard FrontSide="1" Character="万"  Margin="10"/>
+                    <local:HoleCard FrontSide="0" Character="万"  Margin="10"/>
+                </UniformGrid>
             </Grid>
             
         </Grid>

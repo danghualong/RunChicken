@@ -23,8 +23,29 @@ namespace RunChicken
         public HoleCard()
         {
             InitializeComponent();
+            this.SizeChanged += HoleCard_SizeChanged;
         }
 
+        private void HoleCard_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var width = this.Width;
+            var height = this.Height;
+            var sqrt3 = Math.Sqrt(3);
+            if (sqrt3 * width> 2 * height)
+            {
+                width = 2 * height / sqrt3;
+            }
+            var unit = width / 2;
+            var points = new PointCollection();
+            points.Add(new Point(0, sqrt3 / 2 * unit));
+            points.Add(new Point(unit/2, 0));
+            points.Add(new Point(unit*3 / 2,0));
+            points.Add(new Point(2*unit, sqrt3 / 2 * unit));
+            points.Add(new Point(unit * 3 / 2, sqrt3 * unit));
+            points.Add(new Point(unit/ 2, sqrt3 * unit));
+            pg.Points = points;
+        }
+        
         public int FrontSide
         {
             get
