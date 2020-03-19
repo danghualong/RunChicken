@@ -57,7 +57,8 @@ namespace RunChicken
             InitPlayers();
             board.CurrentPlayerChanged += Board_CurrentPlayerChanged;
             board.PlayerWon += Board_PlayerWon;
-            board.SetPlayers(Players);
+            board.Players = Players;
+            board.Reset();
             this.DataContext = this;
         }
 

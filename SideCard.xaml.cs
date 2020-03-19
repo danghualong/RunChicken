@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RunChicken.models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -31,27 +32,50 @@ namespace RunChicken
         {
             
         }
-
+        /// <summary>
+        /// 当前牌的索引
+        /// </summary>
         public int Index
         {
             get;set;
         }
-        
-        public string Avatar
+
+        public bool PlayerCovered
         {
             get
             {
-                return (string)GetValue(AvatarProperty);
-            }
-            set
-            {
-                SetValue(AvatarProperty, value);
+                return !string.IsNullOrEmpty(PlayerImagePath);
             }
         }
 
-        public static readonly DependencyProperty AvatarProperty = DependencyProperty.Register("Avatar", typeof(string), typeof(SideCard), new PropertyMetadata(null, new PropertyChangedCallback(AvatarChanged)));
+        public void SetPlayer(Player player)
+        {
+            if (player == null)
+            {
+                this.PlayerImagePath = string.Empty;
+            }
+            else
+            {
+                player.Position = this.Index;
+                this.PlayerImagePath = player.Avatar;
+            }
+        }
 
-        private static void AvatarChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        public string PlayerImagePath
+        {
+            get
+            {
+                return (string)GetValue(PlayerImagePathProperty);
+            }
+            set
+            {
+                SetValue(PlayerImagePathProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty PlayerImagePathProperty = DependencyProperty.Register("PlayerImagePath", typeof(string), typeof(SideCard), new PropertyMetadata(null, new PropertyChangedCallback(PlayerImagePathChanged)));
+
+        private static void PlayerImagePathChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var obj = d as SideCard;
             string imgPath = (string)e.NewValue;
@@ -68,14 +92,6 @@ namespace RunChicken
                 obj.img.Source = new BitmapImage(new Uri(imgPath));
                 obj.img.Visibility = Visibility.Visible;
                 obj.tb1.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        public bool PlayerCovered
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(Avatar);
             }
         }
         public string Character

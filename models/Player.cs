@@ -16,6 +16,10 @@ namespace RunChicken.models
         public string Avatar { get; set; }
 
         public bool IsOut { get; set; }
+        /// <summary>
+        /// 是否被其他玩家超越
+        /// </summary>
+        public bool IsExceeded { get; set; }
 
     }
 }

@@ -24,13 +24,11 @@ namespace RunChicken
     public partial class Board : UserControl
     {
         private static int SideEpochs = 2;
-        private List<string> TextBags = null;
+        private List<string> TextBags = new List<string>() { "坐", "和", "目", "日", "常", "党", "从", "众", "万", "九", "百", "千" };
         private List<string> SideCharacters = new List<string>();
         private List<string> HoleCharacters = new List<string>();
-        private ObservableCollection<Player> players = null;
         private List<SideCard> sideCards = new List<SideCard>();
         private List<HoleCard> holeCards = new List<HoleCard>();
-        private List<Player> ExceedPlayers = new List<Player>();
         private int currentPlayerIndex;
         private int CurrentPlayerIndex
         {
@@ -45,13 +43,19 @@ namespace RunChicken
             }
         }
 
-        public event Action<Player> CurrentPlayerChanged;
-        public event Action<Player> PlayerWon;
-
         public Board()
         {
             InitializeComponent();
-            TextBags = new List<string>() { "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "百", "千" };
+            InitCardCharacters();
+            this.SizeChanged += Board_SizeChanged;
+        }
+
+        private void InitCardCharacters()
+        {
+            if(TextBags==null || TextBags.Count <= 0)
+            {
+                return;
+            }
             SideCharacters = new List<string>();
             for (var i = 0; i < SideEpochs; i++)
             {
@@ -59,17 +63,18 @@ namespace RunChicken
             }
             HoleCharacters = new List<string>();
             HoleCharacters.AddRange(TextBags);
-            this.SizeChanged += Board_SizeChanged;
-            InitBoard();
         }
 
         private void Board_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            deployCards();
-            ShowPlayers();
+            LayoutCards();
+            LayoutPlayers();
         }
-
-        private void shuffleCards(List<string> cards)
+        /// <summary>
+        /// 洗牌
+        /// </summary>
+        /// <param name="cards"></param>
+        private void ShuffleCards(List<string> cards)
         {
             Random rand = new Random();
             var count = cards.Count;
@@ -82,14 +87,35 @@ namespace RunChicken
             }
         }
 
-        public void InitBoard()
+        private void InitBoard()
         {
-            shuffleCards(SideCharacters);
-            shuffleCards(HoleCharacters);
-            deployCards();
+            ShuffleCards(SideCharacters);
+            ShuffleCards(HoleCharacters);
+            LayoutCards();
         }
 
-        private void deployCards()
+        private void InitPlayers()
+        {
+            if (Players.Count <= 0)
+            {
+                return;
+            }
+            var sep = SideCharacters.Count / Players.Count;
+            int index = 0;
+            //设置每个玩家的位置
+            foreach(var p in Players)
+            {
+                index++;
+                p.IsOut = false;
+                p.Position = (sep * index + 6) % this.SideCharacters.Count;
+            }
+            LayoutPlayers();
+            this.CurrentPlayerIndex = 0;
+        }
+        /// <summary>
+        /// 布局底牌和边牌
+        /// </summary>
+        private void LayoutCards()
         {
             var cardHeight = 120;
             var cardWidth = 80;
@@ -114,7 +140,7 @@ namespace RunChicken
                 card.Height = cardHeight;
                 card.RenderTransformOrigin = new Point(0.5, 0.5);
                 card.Character = SideCharacters[i];
-                card.Avatar = string.Empty;
+                card.SetPlayer(null);
                 card.Index = i;
                 var group = new TransformGroup();
                 group.Children.Add(new RotateTransform(15 * i, 0,radius));
@@ -145,78 +171,25 @@ namespace RunChicken
             }
             grid.Children.Add(panel);
         }
-
-        private void Card_CardUnfolded(string obj)
+        /// <summary>
+        /// 切换到下一个未被淘汰的玩家
+        /// </summary>
+        private void SwitchCurrentPlayer()
         {
-            var nextCard = getNextCard();
-            if (nextCard == null)
+            var index=(this.CurrentPlayerIndex+1)%this.Players.Count;
+            while (this.Players[index].IsOut)
             {
-                return;
+                index= (index + 1) % this.Players.Count;
             }
-            string nextCardText = nextCard.Character;
-            if (string.Equals(obj, nextCardText))
-            {
-                var player = this.players[CurrentPlayerIndex];
-                var currentSideCard = sideCards.FirstOrDefault(p=>p.Index==player.Position);
-                currentSideCard.Avatar = string.Empty;
-                nextCard.Avatar = player.Avatar;
-                player.Position = nextCard.Index;
-                ExceedPlayers.ForEach(p =>
-                {
-                    var tmpPlayer=players.FirstOrDefault(t => t.Position == p.Position);
-                    tmpPlayer.Lives--;
-                    p.Lives--;
-                    if (p.Lives <= 0)
-                    {
-                        p.IsOut = true;
-                        var card = sideCards.FirstOrDefault(t => t.Index == p.Position);
-                        card.Avatar = string.Empty;
-                    }
-                });
-                var list = players.Where(p => !p.IsOut).ToList();
-                if (list.Count == 1)
-                {
-                    if (PlayerWon != null)
-                    {
-                        PlayerWon(list[0]);
-                    }
-                }
-            }
-            else
-            {
-                SwitchCurrentPlayer();
-            }
-            ExceedPlayers.Clear();
+            this.CurrentPlayerIndex = index;
         }
-
-        public void SetPlayers(ObservableCollection<Player> players)
+        /// <summary>
+        /// 获取当前玩家下一个要跳到的边牌
+        /// </summary>
+        /// <returns></returns>
+        private SideCard GetNextCard()
         {
-            this.players = players;
-            int count = players.Count;
-            var sep = SideCharacters.Count / count;
-            for(int i = 0; i < count; i++)
-            {
-                players[i].Position = sep * i+6;
-                var sideCard=sideCards.FirstOrDefault(p => p.Index == players[i].Position);
-                if (sideCard != null)
-                {
-                    sideCard.Avatar = players[i].Avatar;
-                }
-            }
-            this.CurrentPlayerIndex = 0;
-
-
-        }
-
-        public void SwitchCurrentPlayer()
-        {
-            var index=this.CurrentPlayerIndex+1;
-            this.CurrentPlayerIndex = index % this.players.Count;
-        }
-
-        private SideCard getNextCard()
-        {
-            var player = this.players[CurrentPlayerIndex];
+            var player = this.Players[CurrentPlayerIndex];
             var cardIndex = player.Position;
             for (var i = 0; i < SideCharacters.Count; i++)
             {
@@ -227,42 +200,114 @@ namespace RunChicken
                 }
                 else
                 {
-                    var tmpPlayer=players.FirstOrDefault(p => p.Position == nextCard.Index);
-                    ExceedPlayers.Add(tmpPlayer);
+                    var tmpPlayer=Players.FirstOrDefault(p => p.Position == nextCard.Index);
+                    //ExceedPlayers.Add(tmpPlayer);
+                    tmpPlayer.IsExceeded = true;
                 }
             }
             return null;
         }
-
-        private void ShowPlayers()
+        /// <summary>
+        /// 布局玩家
+        /// </summary>
+        private void LayoutPlayers()
         {
-            int count = players.Count;
-            for (int i = 0; i < count; i++)
+            foreach(var p in Players)
             {
-                var sideCard = sideCards.FirstOrDefault(p =>p.Index == players[i].Position);
+                var sideCard = sideCards.FirstOrDefault(s => s.Index == p.Position);
                 if (sideCard != null)
                 {
-                    sideCard.Avatar = players[i].Avatar;
+                    sideCard.SetPlayer(p);
                 }
             }
         }
 
+
+        #region 接口方法
+        public event Action<Player> CurrentPlayerChanged;
         private void OnCurrentPlayerChanged()
         {
             if (CurrentPlayerChanged != null)
             {
-                CurrentPlayerChanged(this.players[CurrentPlayerIndex]);
+                CurrentPlayerChanged(this.Players[CurrentPlayerIndex]);
             }
         }
 
+        public event Action<Player> PlayerWon;
+
+        public ObservableCollection<Player> Players
+        {
+            get; set;
+        }
         public void Reset()
         {
             InitBoard();
-            for (var i = 0; i < players.Count; i++)
-            {
-                players[i].IsOut = false;
-            }
-            SetPlayers(this.players);
+            InitPlayers();
         }
+        /// <summary>
+        /// 翻底牌之后的结果
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Card_CardUnfolded(string obj)
+        {
+            var nextCard = GetNextCard();
+            if (nextCard == null)
+            {
+                return;
+            }
+            string nextCardText = nextCard.Character;
+
+            //如果底牌和边牌一致
+            if (string.Equals(obj, nextCardText))
+            {
+                var currentPlayer = this.Players[CurrentPlayerIndex];
+                //当前边牌的头像消失
+                var currentSideCard = sideCards.FirstOrDefault(p => p.Index == currentPlayer.Position);
+                currentSideCard.SetPlayer(null);
+                //下一张牌设置玩家头像
+                nextCard.SetPlayer(currentPlayer);
+                //未被淘汰的玩家数量
+                int alivePlayerCount = 0;
+                foreach (var p in Players)
+                {
+                    if (p.IsExceeded)
+                    {
+                        p.Lives--;
+                        //当前用户生命结束，从边牌上移除
+                        if (p.Lives <= 0)
+                        {
+                            p.IsOut = true;
+                            var card = sideCards.FirstOrDefault(t => t.Index == p.Position);
+                            card.SetPlayer(null);
+                        }
+                        p.IsExceeded = false;
+                    }
+                    alivePlayerCount += p.IsOut ? 0 : 1;
+                }
+                //其他玩家全部淘汰后，结束游戏
+                if (alivePlayerCount == 1)
+                {
+                    if (PlayerWon != null)
+                    {
+                        PlayerWon(currentPlayer);
+                    }
+                }
+            }
+            else //如不一致，切换到下一个未被淘汰的玩家
+            {
+                SwitchCurrentPlayer();
+            }
+        }
+        /// <summary>
+        /// 设置词袋
+        /// </summary>
+        /// <param name="textBags"></param>
+        public void SetTextBags(List<string> textBags)
+        {
+            this.TextBags = textBags;
+            InitCardCharacters();
+            Reset();
+        }
+        #endregion
     }
 }
