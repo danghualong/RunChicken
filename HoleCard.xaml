@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:RunChicken"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <Grid >
         <Polygon x:Name="pg" Stroke="Black" StrokeThickness="2" Fill="#eee"/>
-        <Image x:Name="img" Source=".\imgs\chicken_bg.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill" Opacity="0.5" MouseLeftButtonDown="img_MouseLeftButtonDown"/>
+        <Image x:Name="img"  Source=".\imgs\chicken_bg.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill" Opacity="0.5" MouseLeftButtonDown="img_MouseLeftButtonDown"/>
         <TextBlock x:Name="tb1" Text="A" FontSize="60" Foreground="Red" 
                                HorizontalAlignment="Center" 
                                VerticalAlignment="Center"/>

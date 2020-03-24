@@ -36,7 +36,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -59,12 +62,20 @@
       <DependentUpon>Board.xaml</DependentUpon>
     </Compile>
     <Compile Include="models\Player.cs" />
+    <Compile Include="SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SideCard.xaml.cs">
       <DependentUpon>SideCard.xaml</DependentUpon>
     </Compile>
     <Compile Include="ThreadService\CountDownWorker.cs" />
     <Compile Include="ThreadService\DaemonWorker.cs" />
+    <Compile Include="util\ConfigHelper.cs" />
     <Page Include="Board.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -124,6 +135,12 @@
   <ItemGroup>
     <Resource Include="imgs\dbc.jpg" />
     <Resource Include="imgs\dyx.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\circle.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

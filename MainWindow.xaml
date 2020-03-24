@@ -9,28 +9,45 @@
         Title="MainWindow" Height="1000" Width="1200">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0" Background="#ccc">
-            <ListBox ItemsSource="{Binding Players}" SelectedValue="{Binding CurrentPlayer,Mode=TwoWay}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Margin="5,0,0,0" Content="{Binding PlayerName}"/>
-                            <Label Grid.Column="1" Margin="0,0,5,0" Content="{Binding Lives}"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
+        <Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="#ddd">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ListBox ItemsSource="{Binding Players}" SelectedValue="{Binding CurrentPlayer,Mode=TwoWay}"
+                     BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Margin="5,0,0,0" Content="{Binding PlayerName}" VerticalAlignment="Center"/>
+                                <Label Grid.Column="1" Margin="5,0" Content="{Binding Lives}" VerticalAlignment="Center"/>
+                                <!--<Image Grid.Column="2" Margin="0,0,5,0" Height="60" Source="{Binding Avatar}" Stretch="UniformToFill"/>-->
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Grid Grid.Row="1" Background="White">
+                    <Image Source=".\imgs\settings.png" Width="30" Height="30" Margin="5,5,0,10" HorizontalAlignment="Left"
+                           MouseLeftButtonUp="Image_MouseLeftButtonUp"/>
+                </Grid>
+            </Grid>
+        </Border>
         <Grid Grid.Column="1">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0">
+                <Label Content="当前玩家" HorizontalAlignment="Center"/>
+                <Image Source="{Binding CurrentPlayer.Avatar}" Height="120" Stretch="Uniform"/>
+                <Label Content="{Binding CurrentPlayer.PlayerName}" HorizontalAlignment="Center"/>
+            </StackPanel>
             <local:Board x:Name="board">
-                
             </local:Board>
             
         </Grid>

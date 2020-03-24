@@ -6,11 +6,32 @@
              xmlns:local="clr-namespace:RunChicken"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="OpacityAnimation" TargetType="{x:Type Image}">
+            <Style.Triggers>
+                <Trigger Property="Visibility" Value="Visible">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Duration="0:0:1" To="0.7" Storyboard.TargetProperty="Opacity" RepeatBehavior="Forever" AutoReverse="True" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <GeometryGroup x:Key="ClipGeometry120" FillRule="Nonzero">
+            <EllipseGeometry RadiusX="50" RadiusY="60" Center="50, 60"></EllipseGeometry>
+        </GeometryGroup>
+    </UserControl.Resources>
     <Grid>
-        <Ellipse x:Name="pg" Stroke="Black" StrokeThickness="2" Fill="#eee" Margin="3"/>
-        <Image x:Name="img" Source=".\imgs\chicken_bg.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                           Stretch="UniformToFill"/>
+        <Ellipse x:Name="pg" Stroke="Black" StrokeThickness="2" Fill="#eee" Visibility="Collapsed"/>
+        <Image x:Name="bg" Source=".\imgs\circle.png" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                           Stretch="Fill"/>
         <TextBlock x:Name="tb1" Text="A" FontSize="30" Foreground="Red"
                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Image x:Name="img" Source=".\imgs\chicken_bg.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                           Stretch="Fill" Clip="{StaticResource ClipGeometry120}"/>
+        
     </Grid>
 </UserControl>

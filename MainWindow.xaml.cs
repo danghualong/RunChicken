@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using RunChicken.models;
+using RunChicken.util;
 
 namespace RunChicken
 {
@@ -54,11 +55,11 @@ namespace RunChicken
         public MainWindow()
         {
             InitializeComponent();
-            InitPlayers();
             board.CurrentPlayerChanged += Board_CurrentPlayerChanged;
             board.PlayerWon += Board_PlayerWon;
-            board.Players = Players;
-            board.Reset();
+            InitPlayers();
+            board.Players = players;
+            board.SetTextBags(GetWords());
             this.DataContext = this;
         }
 
@@ -67,7 +68,13 @@ namespace RunChicken
             var result=MessageBox.Show(string.Format("恭喜{0}！是否再来一局？", obj.PlayerName),"恭贺",MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
-                board.Reset();
+                InitPlayers();
+                board.Players = players;
+                board.SetTextBags(GetWords());
+            }
+            else
+            {
+                this.Close();
             }
         }
 
@@ -87,9 +94,44 @@ namespace RunChicken
 
         private void InitPlayers()
         {
-            players = new ObservableCollection<Player>();
-            players.Add(new Player() { PlayerName = "党语萱", Lives = 1,Avatar= "pack://application:,,,/RunChicken;component/imgs/dyx.jpg" });
-            players.Add(new Player() { PlayerName = "党秉宸", Lives = 1, Avatar = "pack://application:,,,/RunChicken;component/imgs/dbc.jpg" });
+            var playerList = new ObservableCollection<Player>();
+            var strLives=ConfigHelper.GetConfig("Lives","1");
+            var lives = int.Parse(strLives);
+            playerList.Add(new Player() { PlayerName = "党语萱", Lives = lives, Avatar= "pack://application:,,,/RunChicken;component/imgs/dyx.jpg" });
+            playerList.Add(new Player() { PlayerName = "党秉宸", Lives = lives, Avatar = "pack://application:,,,/RunChicken;component/imgs/dbc.jpg" });
+            Players = playerList;
+        }
+
+        private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            SettingsWindow window = new SettingsWindow();
+            var dr=window.ShowDialog();
+            if (dr.Value)
+            {
+                InitPlayers();
+                board.Players = players;
+                board.SetTextBags(GetWords());
+            }
+        }
+
+        private List<string> GetWords()
+        {
+            var words=ConfigHelper.GetConfig("TextPool","");
+            List<string> wordVector = ConfigHelper.GetWordVector(words);
+            var count = wordVector.Count;
+            if(wordVector==null || count < ConfigHelper.TEXT_NUM)
+            {
+                return ConfigHelper.DEFAULT_WORDS;
+            }
+            Random rand = new Random();
+            for(int i = 0; i < ConfigHelper.TEXT_NUM;i++)
+            {
+                var index=rand.Next(i, count);
+                var tmp = wordVector[i];
+                wordVector[i] = wordVector[index];
+                wordVector[index] = tmp;
+            }
+            return wordVector.GetRange(0, ConfigHelper.TEXT_NUM);
         }
     }
 }

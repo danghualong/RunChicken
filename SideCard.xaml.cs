@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -20,12 +21,28 @@ namespace RunChicken
     /// <summary>
     /// HoleCard.xaml 的交互逻辑
     /// </summary>
-    public partial class SideCard : UserControl
+    public partial class SideCard : UserControl,INotifyPropertyChanged
     {
+        private DoubleAnimation blinkAnimation;
+        private Storyboard storyBoard;
+        static SideCard()
+        {
+            
+        }
         public SideCard()
         {
             InitializeComponent();
             this.SizeChanged += HoleCard_SizeChanged;
+            blinkAnimation = new DoubleAnimation()
+            {
+                To = 0.6,
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+                Duration = new TimeSpan(0, 0, 0, 2, 0)
+            };
+            storyBoard = new Storyboard();
+            Storyboard.SetTargetProperty(blinkAnimation, new PropertyPath(Image.OpacityProperty));
+            storyBoard.Children.Add(blinkAnimation);
         }
 
         private void HoleCard_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -45,6 +62,32 @@ namespace RunChicken
             get
             {
                 return !string.IsNullOrEmpty(PlayerImagePath);
+            }
+        }
+
+        private bool isActiveCard;
+        public bool IsActiveCard
+        {
+            get
+            {
+                return isActiveCard;
+            }
+            set
+            {
+                isActiveCard = value;
+                RaisePropertyChange("IsActiveCard");
+            }
+        }
+
+        public void SetActive(bool isActive)
+        {
+            if (isActive)
+            {
+                storyBoard.Begin(img,true);
+            }
+            else
+            {
+                storyBoard.Stop(img);
             }
         }
 
@@ -113,6 +156,15 @@ namespace RunChicken
             var obj = d as SideCard;
             string character = (string)e.NewValue;
             obj.tb1.Text = character;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChange(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

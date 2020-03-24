@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace RunChicken
     public partial class Board : UserControl
     {
         private static int SideEpochs = 2;
-        private List<string> TextBags = new List<string>() { "坐", "和", "目", "日", "常", "党", "从", "众", "万", "九", "百", "千" };
+        private List<string> TextBags = new List<string>() { "我", "们", "进", "入", "了", "埋", "在", "城", "市", "的", "输", "水" };
         private List<string> SideCharacters = new List<string>();
         private List<string> HoleCharacters = new List<string>();
         private List<SideCard> sideCards = new List<SideCard>();
@@ -107,10 +108,19 @@ namespace RunChicken
             {
                 index++;
                 p.IsOut = false;
-                p.Position = (sep * index + 6) % this.SideCharacters.Count;
+                p.Position = (sep * index + 8) % this.SideCharacters.Count;
             }
             LayoutPlayers();
             this.CurrentPlayerIndex = 0;
+            //UpdateActiveCard();
+        }
+
+        private void UpdateActiveCard()
+        {
+            sideCards.ForEach(p => p.SetActive(false));
+            var index = this.Players[this.CurrentPlayerIndex].Position;
+            var card=sideCards.FirstOrDefault(p => p.Index == index);
+            card.SetActive(true);
         }
         /// <summary>
         /// 布局底牌和边牌
@@ -118,7 +128,7 @@ namespace RunChicken
         private void LayoutCards()
         {
             var cardHeight = 120;
-            var cardWidth = 80;
+            var cardWidth = 100;
             grid.Children.Clear();
             sideCards.Clear();
             holeCards.ForEach(p =>
@@ -138,7 +148,7 @@ namespace RunChicken
                 SideCard card = new SideCard();
                 card.Width = cardWidth;
                 card.Height = cardHeight;
-                card.RenderTransformOrigin = new Point(0.5, 0.5);
+                card.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
                 card.Character = SideCharacters[i];
                 card.SetPlayer(null);
                 card.Index = i;
@@ -151,12 +161,14 @@ namespace RunChicken
             }
 
             var panel = new UniformGrid();
+            panel.Background = new SolidColorBrush(Colors.Transparent);
             panel.Rows = 3;
             panel.Columns = 4;
+            Panel.SetZIndex(panel, -1);
             panel.HorizontalAlignment = HorizontalAlignment.Center;
             panel.VerticalAlignment = VerticalAlignment.Center;
-            var paddingH = width / 2 - radius + cardHeight + 5;
-            var paddingV = height / 2 - radius + cardHeight + 5;
+            var paddingH = width / 2 - radius + cardHeight+15;
+            var paddingV = height / 2 - radius + cardHeight+15;
             panel.Margin = new Thickness(paddingH, paddingV, paddingH, paddingV);
             for (var i = 0; i < HoleCharacters.Count; i++)
             {
@@ -164,11 +176,13 @@ namespace RunChicken
                 card.Tag = i;
                 card.Character = HoleCharacters[i];
                 card.FrontSide = 0;
-                card.Margin = new Thickness(10);
+                card.Background = new SolidColorBrush(Colors.Transparent);
+                card.Margin = new Thickness(6);
                 card.CardUnfolded += Card_CardUnfolded;
                 panel.Children.Add(card);
                 holeCards.Add(card);
             }
+            
             grid.Children.Add(panel);
         }
         /// <summary>
@@ -297,6 +311,7 @@ namespace RunChicken
             {
                 SwitchCurrentPlayer();
             }
+            //UpdateActiveCard();
         }
         /// <summary>
         /// 设置词袋

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Speech.Synthesis;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,9 +24,11 @@ namespace RunChicken
     {
         public event Action<string> CardUnfolded;
         private static bool IsLocked = false;
+        private SpeechSynthesizer speaker;
         public HoleCard()
         {
             InitializeComponent();
+            speaker = new SpeechSynthesizer();
             this.SizeChanged += HoleCard_SizeChanged;
         }
 
@@ -110,10 +113,16 @@ namespace RunChicken
                 return;
             }
             FrontSide = 1;
+            SpeakText(this.Character);
             var worker = new ThreadService.CountDownWorker(2);
             worker.WorkCompleted += Worker_WorkCompleted;
             worker.Start();
             IsLocked = true;
+        }
+
+        private void SpeakText(string text)
+        {
+            speaker.SpeakAsync(text);
         }
 
         private void Worker_WorkCompleted()
