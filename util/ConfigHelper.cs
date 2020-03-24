@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RunChicken.models;
 
 namespace RunChicken.util
 {
@@ -11,6 +12,7 @@ namespace RunChicken.util
     {
         public const int TEXT_NUM = 12;
         public static List<string> DEFAULT_WORDS = new List<string>() { "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "百", "千" };
+        public static string DEFAULT_PLAYERS = "[{'PlayerName':'小鸡', 'Avatar':'chicken.jpg', 'IsChecked':true},{'PlayerName':'小鸭','Avatar':'duck.jpg', 'IsChecked':true}]";
         public static string GetConfig(string key,string defaultValue)
         {
             if (string.IsNullOrEmpty(key))
@@ -40,6 +42,13 @@ namespace RunChicken.util
             }
             ConfigurationManager.AppSettings[key] = data;
             return string.Empty;
+        }
+
+        public static List<Player> GetPlayers()
+        {
+            string strPlayers=GetConfig("Players", DEFAULT_PLAYERS);
+            var players=JsonService.Deserialize<List<Player>>(strPlayers);
+            return players;
         }
 
 

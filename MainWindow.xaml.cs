@@ -97,8 +97,14 @@ namespace RunChicken
             var playerList = new ObservableCollection<Player>();
             var strLives=ConfigHelper.GetConfig("Lives","1");
             var lives = int.Parse(strLives);
-            playerList.Add(new Player() { PlayerName = "党语萱", Lives = lives, Avatar= "pack://application:,,,/RunChicken;component/imgs/dyx.jpg" });
-            playerList.Add(new Player() { PlayerName = "党秉宸", Lives = lives, Avatar = "pack://application:,,,/RunChicken;component/imgs/dbc.jpg" });
+            var configPlayers = ConfigHelper.GetPlayers();
+            foreach(var player in configPlayers)
+            {
+                if (player.IsChecked)
+                {
+                    playerList.Add(new Player() { PlayerName = player.PlayerName, Lives = lives, Avatar = "pack://application:,,,/RunChicken;component/imgs/" + player.Avatar });
+                }
+            }
             Players = playerList;
         }
 

@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -70,6 +74,7 @@
     </Compile>
     <Compile Include="ThreadService\CountDownWorker.cs" />
     <Compile Include="ThreadService\DaemonWorker.cs" />
+    <Compile Include="util\JsonService.cs" />
     <Compile Include="util\ConfigHelper.cs" />
     <Page Include="Board.xaml">
       <SubType>Designer</SubType>
@@ -141,6 +146,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="imgs\circle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\chicken.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\duck.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\Newtonsoft.Json.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

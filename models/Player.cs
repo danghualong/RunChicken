@@ -22,6 +22,7 @@ namespace RunChicken.models
     {
         private string playerName;
         private int lives;
+        private bool isChecked;
         private string avatar;
 
         public string PlayerName
@@ -46,6 +47,18 @@ namespace RunChicken.models
             {
                 lives = value;
                 RaisePropertyChange("Lives");
+            }
+        }
+        public bool IsChecked
+        {
+            get
+            {
+                return isChecked;
+            }
+            set
+            {
+                isChecked = value;
+                RaisePropertyChange("IsChecked");
             }
         }
 
