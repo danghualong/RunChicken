@@ -79,9 +79,9 @@ namespace RunChicken.models
 
         public bool IsOut { get; set; }
         /// <summary>
-        /// 是否被其他玩家超越
+        /// 是否将要被其他玩家超越
         /// </summary>
-        public bool IsExceeded { get; set; }
+        public bool ToExceed { get; set; }
 
     }
 }

@@ -216,7 +216,7 @@ namespace RunChicken
                 {
                     var tmpPlayer=Players.FirstOrDefault(p => p.Position == nextCard.Index);
                     //ExceedPlayers.Add(tmpPlayer);
-                    tmpPlayer.IsExceeded = true;
+                    tmpPlayer.ToExceed = true;
                 }
             }
             return null;
@@ -284,7 +284,7 @@ namespace RunChicken
                 int alivePlayerCount = 0;
                 foreach (var p in Players)
                 {
-                    if (p.IsExceeded)
+                    if (p.ToExceed)
                     {
                         p.Lives--;
                         //当前用户生命结束，从边牌上移除
@@ -294,7 +294,7 @@ namespace RunChicken
                             var card = sideCards.FirstOrDefault(t => t.Index == p.Position);
                             card.SetPlayer(null);
                         }
-                        p.IsExceeded = false;
+                        p.ToExceed = false;
                     }
                     alivePlayerCount += p.IsOut ? 0 : 1;
                 }
@@ -309,6 +309,11 @@ namespace RunChicken
             }
             else //如不一致，切换到下一个未被淘汰的玩家
             {
+                //去除被超越的状态
+                foreach (var p in Players)
+                {
+                    p.ToExceed = false;
+                }
                 SwitchCurrentPlayer();
             }
             //UpdateActiveCard();
